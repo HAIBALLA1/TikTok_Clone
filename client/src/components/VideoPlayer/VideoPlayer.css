@@ -1,0 +1,60 @@
+.video-player {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: black;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .video-player__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  
+  /* Pour les contrôles natifs de la vidéo (si vous voulez les cacher) */
+  .video-player__video::-webkit-media-controls {
+    display: none !important;
+  }
+  
+  .video-player__video::-webkit-media-controls-panel {
+    display: none !important;
+  }
+  
+  .video-player__video::-webkit-media-controls-play-button {
+    display: none !important;
+  }
+  
+  .video-player__video::-webkit-media-controls-timeline {
+    display: none !important;
+  }
+  
+  /* Animation de fade pour le play/pause */
+  .video-player::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .video-player:hover::after {
+    opacity: 1;
+  }
+  
+  /* Style pour la version mobile */
+  @media (max-width: 768px) {
+    .video-player {
+      height: 100vh;
+      width: 100vw;
+    }
+  }

@@ -1,0 +1,146 @@
+.comments-section {
+    background-color: white;
+    height: 100%;
+    padding: 16px;
+  }
+  
+  .comments-header {
+    padding: 12px 0;
+    border-bottom: 1px solid #e6e6e6;
+  }
+  
+  .comments-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #121212;
+  }
+  
+  /* Individual Comment Styles */
+  .comment {
+    display: flex;
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  
+  .comment__avatar {
+    margin-right: 12px;
+  }
+  
+  .comment__avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .comment__content {
+    flex: 1;
+  }
+  
+  .comment__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  
+  .comment__username {
+    font-weight: 600;
+    font-size: 14px;
+    color: #121212;
+    margin-right: 8px;
+  }
+  
+  .comment__timestamp {
+    font-size: 12px;
+    color: #767676;
+  }
+  
+  .comment__text {
+    font-size: 14px;
+    line-height: 1.4;
+    color: #121212;
+    margin-bottom: 8px;
+  }
+  
+  .comment__actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  
+  .like-button, .reply-button {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #767676;
+    cursor: pointer;
+    padding: 4px;
+  }
+  
+  .like-count {
+    margin-left: 4px;
+  }
+  
+  /* Comment Input Styles */
+  .comment-input {
+    display: flex;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  
+  .comment-input__field {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e6e6e6;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  
+  .comment-input__field:focus {
+    border-color: #fe2c55;
+  }
+  
+  .comment-input__submit {
+    background-color: #fe2c55;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .comment-input__submit:disabled {
+    background-color: #ffa5b5;
+    cursor: not-allowed;
+  }
+  
+  .comment-input__submit:hover:not(:disabled) {
+    background-color: #e61e43;
+  }
+  
+  /* Comments List Styles */
+  .comments-list {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    padding-right: 8px;
+  }
+  
+  /* Scrollbar Styling */
+  .comments-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .comments-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .comments-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }

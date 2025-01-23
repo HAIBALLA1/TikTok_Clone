@@ -1,0 +1,14 @@
+.following-page {
+    padding-top: 60px;
+    min-height: 100vh;
+    background-color: #f8f8f8;
+  }
+  
+  .following-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }

@@ -1,0 +1,31 @@
+.search-page {
+  padding-top: 60px; /* Header height */
+  min-height: 100vh;
+  background-color: #f8f8f8;
+}
+
+.search-results {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: #666;
+}
+
+/* Empty state */
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+

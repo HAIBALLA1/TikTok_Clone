@@ -1,0 +1,28 @@
+.upload-page {
+    padding-top: 60px;
+    min-height: 100vh;
+    background-color: #fff;
+  }
+  
+  .upload-content {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .upload-area {
+    border: 2px dashed #e6e6e6;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .upload-area:hover {
+    border-color: #fe2c55;
+    background-color: rgba(254, 44, 85, 0.03);
+  }
