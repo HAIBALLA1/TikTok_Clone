@@ -1,0 +1,19 @@
+# base configuration
+maxmemory 2gb
+maxmemory-policy allkeys-lru
+
+# Protection and security
+protected-mode yes
+tcp-backlog 511
+timeout 0
+tcp-keepalive 300
+
+# Performance
+appendonly yes
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+
+# Logs
+loglevel notice
