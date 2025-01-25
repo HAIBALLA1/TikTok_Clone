@@ -1,5 +1,6 @@
 import { createUser, findUserByEmail, findUserById, updateUser, deleteUser } from '../services/user.service.js';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 // User registration
 export const registerUser = async (req, res) => {
@@ -21,6 +22,7 @@ export const registerUser = async (req, res) => {
 };
 
 // User login
+
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -30,18 +32,30 @@ export const loginUser = async (req, res) => {
     }
 
     if (await bcrypt.compare(password, user.password)) {
-        return res.json({ message: 'Login successful' });
+        // JWT generation
+        const token = jwt.sign(
+            { id: user._id, email: user.email }, 
+            process.env.JWT_SECRET, // secret key
+            { expiresIn: '3h' } // Expiration 
+        );
+
+        return res.json({ message: 'Login successful', token });
     }
 
     res.status(401).send('Invalid credentials');
 };
 
+
 // Get user profile
 export const getUserProfile = async (req, res) => {
-    const userId = req.user.id; // Get user ID from token
+    const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis l'en-tête
+
+    if (!userId) {
+        return res.status(401).send('Unauthorized'); // Aucun ID utilisateur fourni
+    }
 
     try {
-        const user = await findUserById(userId); // Use the service to find the user
+        const user = await findUserById(userId); // Utilise le service pour trouver l'utilisateur
         if (!user) {
             return res.status(404).send('User not found');
         }
@@ -53,8 +67,12 @@ export const getUserProfile = async (req, res) => {
 
 // Update user
 export const updateUserProfile = async (req, res) => {
-    const userId = req.user.id; // Get user ID from token
-    const { username, email } = req.body; // Get updated data from request body
+    const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis l'en-tête
+    const { username, email } = req.body; // Données mises à jour
+
+    if (!userId) {
+        return res.status(401).send('Unauthorized'); // Aucun ID utilisateur fourni
+    }
 
     try {
         const updatedUser = await updateUser(userId, { username, email });
@@ -67,16 +85,21 @@ export const updateUserProfile = async (req, res) => {
     }
 };
 
+
 // Delete user
 export const deleteUserProfile = async (req, res) => {
-    const userId = req.user.id; // Get user ID from token
+    const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis l'en-tête
+
+    if (!userId) {
+        return res.status(401).send('Unauthorized'); // Aucun ID utilisateur fourni
+    }
 
     try {
         const deletedUser = await deleteUser(userId);
         if (!deletedUser) {
             return res.status(404).send('User not found');
         }
-        res.status(204).send(); // No content
+        res.status(204).send(); // Pas de contenu
     } catch (error) {
         res.status(500).send('Error deleting user profile');
     }

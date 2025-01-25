@@ -9,7 +9,7 @@ import recommenderProxy from './proxy/recommenderProxy.js';
 import processingProxy from './proxy/processingProxy.js';
 import { apiGatewayPort } from './config/config.js';
 import dotenv from 'dotenv';
-import { authenticateToken } from './middleware/auth.js'; // Importer le middleware d'authentification
+import { authenticateToken } from './middleware/auth.js'; 
 
 dotenv.config();
 
@@ -20,11 +20,16 @@ app.use(cors()); // Enable CORS
 app.use(express.json()); // Parse JSON bodies
 app.use(rateLimit({ // Limitation de taux
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // Limite chaque IP à 100 requêtes par fenêtre
+    max: 100 
 }));
 
-// Proxy routes
-app.use('/api/users', authenticateToken, userProxy); 
+app.use('/api/users/login', userProxy); 
+app.use('/api/users/register', userProxy); 
+
+app.use('/api/users', authenticateToken, userProxy);
+
+//app.use('/api/users/register', userProxy);
+//app.use('/api/users', authenticateToken, userProxy); 
 app.use('/api/videos', videoProxy);
 app.use('/api/notifications', notificationProxy);
 app.use('/api/social', socialProxy);

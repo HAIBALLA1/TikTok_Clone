@@ -1,19 +1,20 @@
+# Utiliser l'image officielle de Node.js
 FROM node:18
 
-#create app directory
+# Définir le répertoire de travail
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Installer les dépendances
 RUN npm install
 
+# Copier tout le reste du code source
+COPY . ./
 
-COPY ./src ./src
-
-
+# Exposer le port sur lequel l'application va tourner
 EXPOSE 3001
 
-# Start application
-CMD ["node", "src/index.js"]
+# Définir la commande par défaut pour démarrer l'application
+CMD ["npm", "start"]

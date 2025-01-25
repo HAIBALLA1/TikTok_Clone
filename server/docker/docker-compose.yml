@@ -15,8 +15,9 @@ services:
       RABBITMQ_URI: ${RABBITMQ_URI}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     ports:
-      - published: 3000
-        target: 8080
+      - "3000:3000"
+    env_file:
+      - .env
 
   mongo:
     container_name: docker_mongo_1
@@ -83,6 +84,9 @@ services:
     ports:
       - published: 3001
         target: 3001
+        
+    env_file:
+      - .env
 
 volumes:
   mongodb_data: {}
