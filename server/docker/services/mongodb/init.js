@@ -1,5 +1,13 @@
+db = db.getSiblingDB('admin');
 
-// Switch to the application database
+// Création de l'utilisateur administrateur
+db.createUser({
+  user: "admin",
+  pwd: "MySecureP@ssw0rd2024", 
+  roles: [ { role: "root", db: "admin" } ]
+});
+
+// Passer à la base de données 'tiktok_clone' pour initialiser les collections
 db = db.getSiblingDB('tiktok_clone');
 
 // Users Collection
@@ -18,7 +26,7 @@ db.videos.createIndex({ "createdAt": -1 });      // For feed sorting
 // Stores video comments
 db.createCollection('comments');
 db.comments.createIndex({ "videoId": 1 });       // For video comments lookup
-db.comments.createIndex({ "userId": 1 });        // For user comments lookup
+db.comments.createIndex({ "userId": 1 });
 
 // Likes Collection
 // Tracks user likes on videos
