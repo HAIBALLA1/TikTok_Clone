@@ -1,21 +1,21 @@
 version: '3.8'
 
-
 services:
   api-gateway:
     build:
       context: /home/ing/Bureau/TikTok_Clone/server/api-gateway
     depends_on:
       - user-service
+      - video-service
     environment:
-      # On récupère les variables depuis .env (Docker Compose va les substituer)
-      API_GATEWAY_PORT: ${API_GATEWAY_PORT}
+      API_GATEWAY_PORT: 3009
       JWT_SECRET: ${JWT_SECRET}
       MONGODB_URI: ${MONGODB_URI}
       RABBITMQ_URI: ${RABBITMQ_URI}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
+      VIDEO_SERVICE_PORT: ${VIDEO_SERVICE_PORT}
     ports:
-      - "3000:3000"
+      - "3009:3009"
     env_file:
       - .env
 
@@ -84,9 +84,29 @@ services:
     ports:
       - published: 3001
         target: 3001
-        
     env_file:
       - .env
+
+  video-service:
+    build:
+      context: /home/ing/Bureau/TikTok_Clone/server/services/video-service
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      RABBITMQ_URI: ${RABBITMQ_URI}
+      VIDEO_SERVICE_PORT: ${VIDEO_SERVICE_PORT}
+    ports:
+      - published: 3002
+        target: 3002
+    env_file:
+      - .env
+    volumes:
+      - ../services/video-service/uploads:/app/uploads
 
 volumes:
   mongodb_data: {}

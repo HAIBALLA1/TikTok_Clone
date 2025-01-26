@@ -10,6 +10,7 @@ import processingProxy from './proxy/processingProxy.js';
 import { apiGatewayPort } from './config/config.js';
 import dotenv from 'dotenv';
 import { authenticateToken } from './middleware/auth.js'; 
+import bodyParser from 'body-parser';
 
 dotenv.config();
 
@@ -23,14 +24,23 @@ app.use(rateLimit({ // Limitation de taux
     max: 100 
 }));
 
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+app.use('/api/users/register', userProxy);
+app.get('/api', (req, res) => {
+    res.json({ message: 'API Gateway is running' });
+  });
+  
+
+
 app.use('/api/users/login', userProxy); 
-app.use('/api/users/register', userProxy); 
 
-app.use('/api/users', authenticateToken, userProxy);
-
-//app.use('/api/users/register', userProxy);
-//app.use('/api/users', authenticateToken, userProxy); 
-app.use('/api/videos', videoProxy);
+app.use('/api/users', authenticateToken, userProxy); 
+app.use('/api/videos', authenticateToken , videoProxy);
 app.use('/api/notifications', notificationProxy);
 app.use('/api/social', socialProxy);
 app.use('/api/recommender', recommenderProxy);
