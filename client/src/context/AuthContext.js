@@ -1,46 +1,45 @@
+// src/context/AuthContext.js
 import React, { createContext, useContext, useState } from 'react';
 
 // Création du contexte
 const AuthContext = createContext(null);
 
-// Provider qui va envelopper notre application
+// Provider qui va envelopper toute l'application
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Fonction de connexion
   const login = (userData) => {
-    setUser(userData);
-    setIsAuthenticated(true);
-    // Vous pouvez ajouter ici la logique pour sauvegarder le token dans localStorage
-    localStorage.setItem('user', JSON.stringify(userData));
+    if (userData && userData.token) {
+      setUser(userData);
+      setIsAuthenticated(true);
+      localStorage.setItem('user', JSON.stringify(userData)); // Sauvegarde dans localStorage
+      console.log('Logged in user:', userData);
+    }
   };
+  
 
   // Fonction de déconnexion
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    // Nettoyage du localStorage
-    localStorage.removeItem('user');
+    localStorage.removeItem('user'); // Suppression du localStorage
   };
 
-  // Vérification du statut de connexion au chargement
+  // Vérification de la connexion au chargement
   React.useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      setUser(userData);
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
       setIsAuthenticated(true);
     }
   }, []);
 
+  // Retourne les données et les fonctions utiles
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      isAuthenticated, 
-      login, 
-      logout 
-    }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -54,3 +53,15 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// token 
+export const getToken = () => {
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    const user = JSON.parse(storedUser);
+    console.log('User token:', user.token);
+    return user.token;
+  }
+  return null;
+};
+

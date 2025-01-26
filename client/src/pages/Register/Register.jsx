@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../service/api'; 
 import './Register.css';
 
 const Register = () => {
@@ -21,24 +22,42 @@ const Register = () => {
     });
   };
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
-    // password verification
+  
+    // Check if the passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
+  
     try {
-      // Ici vous ajouterez la logique d'inscription avec votre API
-      await login(formData);
-      navigate('/');
+      // Send the request to the backend
+      console.log('Sending registration request with:', formData);
+      const response = await api.post('/users/register', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+  
+      // Successful registration
+      console.log('Registration successful:', response.data);
+      login(response.data); // Stock the user data in the context
+      navigate('/'); // Redirection
     } catch (err) {
-      setError('Error during registration');
+      console.error('Error during registration:', err);
+      if (err.response && err.response.data) {
+        setError(err.response.data.error || 'An error occurred during registration');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
+  
+
 
   return (
     <div className="register-page">

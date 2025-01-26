@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Login.css';
+import api from '../../service/api';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,15 +22,30 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');Sign up
-    
+    setError('');
+  
     try {
-      await login(formData);
-      navigate('/');
+      // Send the login request
+      console.log('Sending login request with:', formData);
+      const response = await api.post('/users/login', {
+        email: formData.email,
+        password: formData.password,
+      });
+  
+      // Login successful
+      console.log('Login successful:', response.data);
+      login(response.data); // Store the user data and the token in the context
+      navigate('/'); // Redirect to the home page
     } catch (err) {
-      setError('Email or password incorrect');
+      console.error('Error during login:', err);
+      if (err.response && err.response.data) {
+        setError(err.response.data.error || 'Invalid email or password');
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     }
   };
+  
 
   return (
     <div className="auth-page">

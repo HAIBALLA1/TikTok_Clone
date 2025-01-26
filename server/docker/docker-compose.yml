@@ -8,7 +8,7 @@ services:
       - user-service
       - video-service
     environment:
-      API_GATEWAY_PORT: 3009
+      API_GATEWAY_PORT: ${API_GATEWAY_PORT}
       JWT_SECRET: ${JWT_SECRET}
       MONGODB_URI: ${MONGODB_URI}
       RABBITMQ_URI: ${RABBITMQ_URI}
@@ -18,6 +18,8 @@ services:
       - "3009:3009"
     env_file:
       - .env
+    volumes:
+      - ./uploads:/app/uploads
 
   mongo:
     container_name: docker_mongo_1

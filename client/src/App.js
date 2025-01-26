@@ -1,7 +1,10 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 
 // Import des pages
+import Header from './components/Header/Header';
+
 import Home from './pages/Home/Home';
 import Search from './pages/Search/Search';
 import VideoDetail from './pages/VideoDetail/VideoDetail';

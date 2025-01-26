@@ -2,6 +2,9 @@ import Video from '../models/video.model.js';
 
 export const uploadVideo = async (req, res) => {
     try {
+        console.log('[Video Service] Requête reçue');
+        console.log('[Video Service] x-user-id reçu :', req.headers['x-user-id']);
+
         const { title, description } = req.body;
         const videoFile = req.file;
         const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis les en-têtes

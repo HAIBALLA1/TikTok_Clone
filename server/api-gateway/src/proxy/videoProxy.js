@@ -1,20 +1,15 @@
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { videoServiceUrl } from '../config/config.js';
 
 const videoProxy = createProxyMiddleware({
-    target: videoServiceUrl,
+    target: 'http://video-service:3002',
     changeOrigin: true,
-    onProxyReq: (proxyReq, req) => {
-        // Vérifiez si la requête est multipart/form-data
-        if (!req.is('multipart/form-data') && req.body) {
-            const bodyData = JSON.stringify(req.body);
-            if (!proxyReq.writableEnded) {
-                proxyReq.setHeader('Content-Type', 'application/json');
-                proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
-                proxyReq.write(bodyData);
-            }
+    onProxyReq: (proxyReq, req, res) => {
+        if (req.headers['x-user-id']) {
+            proxyReq.setHeader('x-user-id', req.headers['x-user-id']);
+            console.log('[Proxy Vidéo] Forwarding x-user-id:', req.headers['x-user-id']);
         }
     },
+    logLevel: 'debug', // Pour des logs détaillés
 });
 
 export default videoProxy;
