@@ -5,10 +5,10 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/user.routes.js';
 
 const app = express();
-app.use(cors());
+
+app.use(cors()); 
 app.use(express.json());
 
-// Récupère la variable d'environnement injectée par Docker
 const mongoURI = process.env.MONGODB_URI;
 
 mongoose.connect(mongoURI)

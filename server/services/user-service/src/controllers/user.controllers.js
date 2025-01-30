@@ -8,13 +8,13 @@ import User from '../models/user.model.js';
 export const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
-    // Vérifiez si tous les champs nécessaires sont présents
+    // Verify if all fields  required are present
     if (!username || !email || !password) {
         return res.status(400).send('All fields are required: username, email, and password');
     }
 
     try {
-        // Vérifiez si l'email ou le username est déjà utilisé
+        // Verify if the email or username is already used
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             if (existingUser.email === email) {
@@ -25,10 +25,10 @@ export const registerUser = async (req, res) => {
             }
         }
 
-        // Hachez le mot de passe
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Créez le nouvel utilisateur
+        // Create the new user
         await createUser(username, email, hashedPassword);
 
         res.status(201).send('User registered');
@@ -89,8 +89,8 @@ export const getUserProfile = async (req, res) => {
 
 // Update user
 export const updateUserProfile = async (req, res) => {
-    const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis l'en-tête
-    const { username, email } = req.body; // Données mises à jour
+    const userId = req.headers['x-user-id']; // get the user id from the header
+    const { username, email } = req.body; // update data
 
     if (!userId) {
         return res.status(401).send('Unauthorized'); // Aucun ID utilisateur fourni

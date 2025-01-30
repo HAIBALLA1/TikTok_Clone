@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Header.css';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -17,38 +19,25 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header__container">
-        {/* Logo avec lien vers la page d'accueil */}
+        {/* Logo */}
         <Link to="/" className="header__logo">
-          <img 
-            src="/logo.png" 
-            alt="TikTok" 
-            className="header__logo-img"
-          />
+          <img src="/logo.png" alt="TikTok" className="header__logo-img" />
         </Link>
 
-        {/* Navigation principale */}
+        {/* Main navigation */}
         <nav className="header__nav">
-          <Link 
-            to="/" 
-            className={`nav__button ${location.pathname === '/' ? 'active' : ''}`}
-          >
+          <Link to="/" className={`nav__button ${location.pathname === '/' ? 'active' : ''}`}>
             For You
           </Link>
-          <Link 
-            to="/following" 
-            className={`nav__button ${location.pathname === '/following' ? 'active' : ''}`}
-          >
+          <Link to="/following" className={`nav__button ${location.pathname === '/following' ? 'active' : ''}`}>
             Following
           </Link>
-          <Link 
-            to="/live" 
-            className={`nav__button ${location.pathname === '/live' ? 'active' : ''}`}
-          >
+          <Link to="/live" className={`nav__button ${location.pathname === '/live' ? 'active' : ''}`}>
             LIVE
           </Link>
         </nav>
 
-        {/* Barre de recherche */}
+        {/* Search bar */}
         <form className="header__search" onSubmit={handleSearch}>
           <input
             type="text"
@@ -62,17 +51,29 @@ const Header = () => {
           </button>
         </form>
 
-        {/* Actions à droite */}
+        {/* Actions */}
         <div className="header__actions">
           <Link to="/upload" className="action__button upload">
             <i className="fas fa-plus"></i> Upload
           </Link>
-          <Link to="/login" className="action__button login">
-            Login
-          </Link>
-          <button className="action__menu">
-            <i className="fas fa-ellipsis-v"></i>
-          </button>
+          {user ? (
+            <div className="profile-menu">
+              <Link to={`/profile/`} className="profile-link">
+                <img
+                  src={user.avatar || '/default-avatar.png'}
+                  alt="Profile"
+                  className="profile-avatar"
+                />
+              </Link>
+              <button onClick={logout} className="logout-button">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="action__button login">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </header>
