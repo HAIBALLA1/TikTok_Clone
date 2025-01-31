@@ -2,12 +2,10 @@ import Video from '../models/video.model.js';
 
 export const uploadVideo = async (req, res) => {
     try {
-        console.log('[Video Service] Requête reçue');
-        console.log('[Video Service] x-user-id reçu :', req.headers['x-user-id']);
 
         const { title, description } = req.body;
         const videoFile = req.file;
-        const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis les en-têtes
+        const userId = req.headers['x-user-id']; 
 
         if (!videoFile) {
             return res.status(400).json({ error: 'No video file uploaded' });
@@ -17,16 +15,16 @@ export const uploadVideo = async (req, res) => {
             return res.status(401).json({ error: 'Unauthorized: User ID missing' });
         }
 
-        // Construire l'URL de la vidéo
+        // video url 
         const videoUrl = `/uploads/${videoFile.filename}`;
-        const thumbnailUrl = ''; // Vous pouvez implémenter la génération de miniatures ici
+        const thumbnailUrl = ''; 
 
-        // Créer l'entrée vidéo dans la base de données
+        //video creation
         const video = await Video.create({ userId, title, description, videoUrl, thumbnailUrl });
         res.status(201).json(video);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error uploading video' });
+        res.status(500).json({ error: 'Error uploading the video' });
     }
 };
 
