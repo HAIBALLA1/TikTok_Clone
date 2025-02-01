@@ -1,33 +1,52 @@
 import Video from '../models/video.model.js';
 import { publishMessage } from '../services/amqplib.service.js';
+import s3 from '../config/aws.js';
+import multerS3 from 'multer-s3';
+import multer from 'multer';
 
-export const uploadVideo = async (req, res) => {
-    try {
 
+const upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.AWS_S3_BUCKET, 
+      acl: 'public-read',                
+      key: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + '-' + file.originalname);
+      }
+    })
+  }).single('video');
+  
+  export const uploadVideo = (req, res) => {
+    // Use multer to upload to S3
+    upload(req, res, async (err) => {
+      if (err) {
+        console.error('S3 error:', err);
+        return res.status(500).json({ error: 'Error uploading to S3' });
+      }
+      try {
         const { title, description } = req.body;
-        const videoFile = req.file;
-        const userId = req.headers['x-user-id']; 
-
-        if (!videoFile) {
-            return res.status(400).json({ error: 'No video file uploaded' });
+        const userId = req.headers['x-user-id'];
+        if (!req.file) {
+          return res.status(400).json({ error: 'No video file uploaded' });
         }
-
         if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized: User ID missing' });
+          return res.status(401).json({ error: 'User ID missing' });
         }
-
-        // video url 
-        const videoUrl = `/uploads/${videoFile.filename}`;
-        const thumbnailUrl = ''; 
-
-        //video creation
+  
+        // The file URL is provided by multer-s3
+        const videoUrl = req.file.location;
+        const thumbnailUrl = ''; // I will generate a thumbnail later
+  
+        // Create the video in the database
         const video = await Video.create({ userId, title, description, videoUrl, thumbnailUrl });
         res.status(201).json(video);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error uploading the video' });
-    }
-};
+      } catch (error) {
+        console.error('Erreur upload vidéo:', error);
+        res.status(500).json({ error: 'Error uploading video' });
+      }
+    });
+  };    
 
 
 export const getVideos = async (req, res) => {

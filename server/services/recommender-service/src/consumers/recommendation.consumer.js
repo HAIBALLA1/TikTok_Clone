@@ -2,14 +2,15 @@ import amqp from 'amqplib';
 import { updateRecommendationWithInteraction } from '../services/recommendation.service.js';
 
 async function initRabbitMQ() {
-  const connection = await amqp.connect('amqp://localhost');
+
+    const connection = await amqp.connect(process.env.RABBITMQ_URI || 'amqp://localhost');
   const channel = await connection.createChannel();
 
-  // Déclaration de l'exchange (type topic)
+  // the exchange is of type topic
   await channel.assertExchange('interactions_exchange', 'topic', { durable: false });
-  // Déclaration de la file dédiée aux recommandations
+  // the queue is dedicated to recommendations
   await channel.assertQueue('recommendation_queue', { durable: false });
-  // Liaison de la file à l'exchange pour recevoir les messages avec la clé 'interaction.new'
+  // the queue is bound to the exchange to receive messages with the key 'interaction.new'
   await channel.bindQueue('recommendation_queue', 'interactions_exchange', 'interaction.new');
 
   console.log('[AMQP][Recommandation] Exchange et queue configurés');
@@ -24,12 +25,12 @@ export async function startRecommendationConsumer() {
       if (msg !== null) {
         const interaction = JSON.parse(msg.content.toString());
         console.log('[Recommandation] Interaction reçue :', interaction);
-        // Mise à jour de la logique de recommandation
+        // update the recommendation based on the interaction
         updateRecommendationWithInteraction(interaction);
         channel.ack(msg);
       }
     },
     { noAck: false }
   );
-  console.log('[AMQP][Recommandation] En écoute sur recommendation_queue');
+  console.log('[AMQP][Recommandation] Listening on recommendation_queue');
 }

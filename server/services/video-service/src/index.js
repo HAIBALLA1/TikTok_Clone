@@ -10,23 +10,23 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors()); // Permettre les requêtes cross-origin
-app.use(express.json()); // Pour parser les requêtes JSON
+app.use(cors()); 
+app.use(express.json()); 
 
-// Servir les fichiers statiques
+// Serve static files
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// Définir les routes pour les vidéos
+// Define routes for videos
 app.use('/api/videos', videoRoutes);
 
-// Configurer body-parser pour les requêtes multipart/form-data (utile pour les uploads)
+// Configure body-parser for multipart/form-data requests (useful for uploads)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Port du service vidéo
+// Video service port
 const PORT = process.env.VIDEO_SERVICE_PORT || 3002;
 
-// Démarrer le serveur après synchronisation avec la base de données
+// Start server after database synchronization
 sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => {
         console.log(`Video service running on port ${PORT}`);
