@@ -33,6 +33,10 @@ const Video = sequelize.define('Video', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
+    sharesCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW

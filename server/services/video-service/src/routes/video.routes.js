@@ -1,7 +1,6 @@
-// routes/video.routes.js
 import express from 'express';
 import multer from 'multer';
-import { uploadVideo, getVideos, getVideoById, updateVideo, deleteVideo } from '../controllers/video.controller.js';
+import { uploadVideo, getVideos, getVideoById, updateVideo, deleteVideo ,interactWithVideo } from '../controllers/video.controller.js';
 
 const router = express.Router();
 
@@ -23,5 +22,7 @@ router.get('/', getVideos);
 router.get('/:id', getVideoById);
 router.put('/:id', updateVideo);
 router.delete('/:id', deleteVideo);
+
+router.post('/:id/interact', interactWithVideo);
 
 export default router;

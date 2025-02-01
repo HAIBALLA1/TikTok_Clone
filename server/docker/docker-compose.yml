@@ -109,6 +109,25 @@ services:
       - .env
     volumes:
       - ../services/video-service/uploads:/app/uploads
+  
+  recommender-service:
+    build:
+      context: /home/ing/Bureau/TikTok_Clone/server/services/recommender-service
+    depends_on:
+      - rabbitmq
+      - redis
+    environment:
+      RECOMMENDATION_SERVICE_PORT: 5000
+      RABBITMQ_URI: amqp://rabbitmq  
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - published: 5000
+        target: 5000
+    env_file:
+      - .env
+
 
 volumes:
   mongodb_data: {}

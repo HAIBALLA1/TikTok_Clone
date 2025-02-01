@@ -1,4 +1,5 @@
 import Video from '../models/video.model.js';
+import { publishMessage } from '../services/amqplib.service.js';
 
 export const uploadVideo = async (req, res) => {
     try {
@@ -46,6 +47,44 @@ export const getVideoById = async (req, res) => {
         res.status(200).json(video);
     } catch (error) {
         res.status(500).json({ error: 'Error retrieving video' });
+    }
+};
+
+export const interactWithVideo = async (req, res) => {
+    try {
+        const userId = req.headers['x-user-id'];
+        const videoId = req.params.id;
+        const actionType = req.body.actionType;  
+        const watchTime = req.body.watchTime || 0; 
+
+        if (!['like', 'watch', 'share'].includes(actionType)) {
+            return res.status(400).json({ error: 'Invalid action type' });
+        }
+
+        const interaction = {
+            userId,
+            videoId,
+            actionType,
+            watchTime
+        };
+
+        await publishMessage('interactions_exchange', 'interaction.new', interaction);
+        console.log('Interaction published:', interaction);
+
+        res.status(200).json({ message: 'Interaction recorded and sent' });
+
+        if (actionType === 'like') {
+            await Video.increment('likesCount', { where: { id: videoId } });
+        }else if (actionType === 'watch') {
+            await Video.increment('viewsCount', { where: { id: videoId } });
+        }else if (actionType === 'share'){
+            await Video.increment('sharesCount', { where: { id: videoId } });
+        }
+
+
+    } catch (error) {
+        console.error('Error processing interaction:', error);
+        res.status(500).json({ error: 'Error processing interaction' });
     }
 };
 
