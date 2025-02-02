@@ -56,14 +56,13 @@ export const loginUser = async (req, res) => {
             { expiresIn: '3h' }
         );
 
-        // Renvoi de l'ID de l'utilisateur dans la réponse
+        // Return the user ID in the response
         return res.json({ 
             message: 'Login successful', 
             token,
             user: {
               id: user._id,
               email: user.email,
-              // Vous pouvez ajouter d'autres infos ici, par exemple username, etc.
             }
         });
     }
@@ -84,7 +83,7 @@ export const getUserProfile = async (req, res) => {
     }
 
     try {
-        const user = await User.findById(userId); // Utilisation de `findById`
+        const user = await User.findById(userId); 
         if (!user) {
             return res.status(404).send('User not found');
         }
@@ -101,7 +100,7 @@ export const updateUserProfile = async (req, res) => {
     const { username, email } = req.body; // update data
 
     if (!userId) {
-        return res.status(401).send('Unauthorized'); // Aucun ID utilisateur fourni
+        return res.status(401).send('Unauthorized'); 
     }
 
     try {
@@ -118,10 +117,10 @@ export const updateUserProfile = async (req, res) => {
 
 // Delete user
 export const deleteUserProfile = async (req, res) => {
-    const userId = req.headers['x-user-id']; // Récupère l'ID utilisateur depuis l'en-tête
+    const userId = req.headers['x-user-id']; 
 
     if (!userId) {
-        return res.status(401).send('Unauthorized'); // Aucun ID utilisateur fourni
+        return res.status(401).send('Unauthorized'); 
     }
 
     try {
@@ -129,7 +128,7 @@ export const deleteUserProfile = async (req, res) => {
         if (!deletedUser) {
             return res.status(404).send('User not found');
         }
-        res.status(204).send(); // Pas de contenu
+        res.status(204).send(); 
     } catch (error) {
         res.status(500).send('Error deleting user profile');
     }

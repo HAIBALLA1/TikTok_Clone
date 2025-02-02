@@ -1,32 +1,31 @@
 import React, { createContext, useContext, useState } from 'react';
 
-// Création du contexte
 const AuthContext = createContext(null);
 
-// Provider qui va envelopper toute l'application
+// Provider which will wrap the entire application
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Fonction de connexion
+  // Login function
   const login = (userData) => {
     if (userData && userData.token) {
       setUser(userData);
       setIsAuthenticated(true);
-      localStorage.setItem('user', JSON.stringify(userData)); // Sauvegarde dans localStorage
+      localStorage.setItem('user', JSON.stringify(userData)); // Save in localStorage
       console.log('Logged in user:', userData);
     }
   };
   
 
-  // Fonction de déconnexion
+  // Logout function
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('user'); // Suppression du localStorage
+    localStorage.removeItem('user'); // Remove from localStorage
   };
 
-  // Vérification de la connexion au chargement
+  // Check if the user is logged in when the component loads
   React.useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -36,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Retourne les données et les fonctions utiles
+  // Return the data and functions useful
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
       {children}
@@ -44,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook personnalisé pour utiliser le contexte
+// Custom hook to use the context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -53,7 +52,7 @@ export const useAuth = () => {
   return context;
 };
 
-// token 
+// token getter
 export const getToken = () => {
   const storedUser = localStorage.getItem('user');
   if (storedUser) {

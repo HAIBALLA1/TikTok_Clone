@@ -9,7 +9,7 @@ export async function getUserRecommendations(req, res) {
     const recommendations = await getHybridRecommendations(userId);
     res.json({ userId, recommendations });
   } catch (error) {
-    console.error('Erreur lors de la récupération des recommandations:', error);
+    console.error('Error retrieving recommendations:', error);
     res.status(500).json({ error: 'Error retrieving recommendations' });
   }
 }

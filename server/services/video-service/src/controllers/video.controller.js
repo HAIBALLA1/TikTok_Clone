@@ -17,7 +17,7 @@ const upload = multer({
     })
   }).single('video');
   
-  export const uploadVideo = (req, res) => {
+export const uploadVideo = (req, res) => {
     // Use multer to upload to S3
     upload(req, res, async (err) => {
       if (err) {
@@ -46,7 +46,7 @@ const upload = multer({
         res.status(500).json({ error: 'Error uploading video' });
       }
     });
-  };    
+};    
 
 
 export const getVideos = async (req, res) => {
@@ -68,6 +68,34 @@ export const getVideoById = async (req, res) => {
         res.status(500).json({ error: 'Error retrieving video' });
     }
 };
+
+export const getVideosByIds = async (req, res) => {
+    try {
+      const { ids } = req.query;
+      if (!ids) {
+        return res.status(400).json({ error: "Query parameter 'ids' is required" });
+      }
+      // Split the string by comma, convert each element to an integer and filter out NaN
+      const idsArray = ids
+        .split(',')
+        .map(id => parseInt(id, 10))
+        .filter(num => !isNaN(num));
+  
+      if (idsArray.length === 0) {
+        return res.status(400).json({ error: "No valid ID provided" });
+      }
+      
+      const videos = await Video.findAll({
+        where: { id: idsArray }
+      });
+      
+      res.status(200).json(videos);
+    } catch (error) {
+      console.error("Error retrieving videos by IDs:", error);
+      res.status(500).json({ error: "Error retrieving videos by IDs" });
+    }
+  };
+  
 
 export const interactWithVideo = async (req, res) => {
     try {
