@@ -40,8 +40,6 @@ export const registerUser = async (req, res) => {
 
 
 
-
-
 // User login
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -58,11 +56,21 @@ export const loginUser = async (req, res) => {
             { expiresIn: '3h' }
         );
 
-        return res.json({ message: 'Login successful', token });
+        // Renvoi de l'ID de l'utilisateur dans la réponse
+        return res.json({ 
+            message: 'Login successful', 
+            token,
+            user: {
+              id: user._id,
+              email: user.email,
+              // Vous pouvez ajouter d'autres infos ici, par exemple username, etc.
+            }
+        });
     }
 
     res.status(401).send('Invalid credentials');
 };
+
 
 
 

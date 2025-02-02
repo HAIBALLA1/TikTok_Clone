@@ -27,7 +27,7 @@ const VideoCard = ({ video }) => {
         </div>
       </div>
 
-      {/* Info utilisateur et description */}
+     
       <div className="video-info">
         <div className="user-info">
           <img src={video.userAvatar} alt={video.username} className="user-avatar" />

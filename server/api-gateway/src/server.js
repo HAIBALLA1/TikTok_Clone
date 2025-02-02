@@ -32,7 +32,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-app.use('/api/users/register', userProxy);
 app.get('/api', (req, res) => {
     res.json({ message: 'API Gateway is running' });
   });
@@ -46,18 +45,13 @@ app.use((req, res, next) => {
   
 app.use('/api/users/register', userProxy);
 
-app.use((err, req, res, next) => {
-    console.error(`[ERROR] ${err.message}`);
-    res.status(500).send(err.message || 'Internal Server Error');
-});
-
 app.use('/api/users/login', userProxy); 
 
 app.use('/api/users', authenticateToken, userProxy); 
 app.use('/api/videos', (req, res, next) => {
-    const user = req.user; // Vérifie si le middleware authenticateToken a bien défini req.user
+    const user = req.user; // Verify if the authenticateToken middleware has set req.user
     if (user) {
-        req.headers['x-user-id'] = user.id; // Ajoute l'ID utilisateur dans les en-têtes
+        req.headers['x-user-id'] = user.id; // Add the user ID to the headers
         console.log('Headers sent to video-service:', req.headers);
     } else {
         console.error('User not authenticated, cannot forward x-user-id');
@@ -65,10 +59,7 @@ app.use('/api/videos', (req, res, next) => {
     next();
 }, videoProxy);
 
-app.use('/api/notifications', notificationProxy);
-app.use('/api/social', socialProxy);
 app.use('/api/recommender', recommenderProxy);
-app.use('/api/processing', processingProxy);
 
 // Error handling
 app.use((err, req, res, next) => {
