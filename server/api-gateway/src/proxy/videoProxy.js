@@ -1,7 +1,9 @@
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { videoServiceUrl } from '../config/config.js';
+
 
 const videoProxy = createProxyMiddleware({
-    target: 'http://video-service:3002',
+    target: videoServiceUrl,
     changeOrigin: true,
     onProxyReq: (proxyReq, req, res) => {
         if (req.headers['x-user-id']) {
@@ -9,7 +11,7 @@ const videoProxy = createProxyMiddleware({
             console.log('[Proxy Vidéo] Forwarding x-user-id:', req.headers['x-user-id']);
         }
     },
-    logLevel: 'debug', // Pour des logs détaillés
+
 });
 
 export default videoProxy;

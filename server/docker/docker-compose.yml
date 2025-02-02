@@ -7,6 +7,7 @@ services:
     depends_on:
       - user-service
       - video-service
+      - recommender-service
     environment:
       API_GATEWAY_PORT: ${API_GATEWAY_PORT}
       JWT_SECRET: ${JWT_SECRET}
@@ -14,8 +15,9 @@ services:
       RABBITMQ_URI: ${RABBITMQ_URI}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
       VIDEO_SERVICE_PORT: ${VIDEO_SERVICE_PORT}
+      RECOMMENDER_SERVICE_URL: ${RECOMMENDER_SERVICE_URL}
     ports:
-      - "3009:3009"
+      - "3009:${API_GATEWAY_PORT}"
     env_file:
       - .env
     volumes:
@@ -29,8 +31,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
-      - published: 27017
-        target: 27017
+      - published: ${MONGODB_PORT}
+        target: ${MONGODB_PORT}
     volumes:
       - /home/ing/Bureau/TikTok_Clone/server/docker/services/mongodb/init.js:/docker-entrypoint-initdb.d/init.js:ro
       - mongodb_data:/data/db:rw
@@ -43,8 +45,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - published: 5432
-        target: 5432
+      - published: ${POSTGRES_PORT}
+        target: ${POSTGRES_PORT}
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
 
@@ -55,10 +57,10 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     ports:
-      - published: 5672
-        target: 5672
-      - published: 15672
-        target: 15672
+      - published: ${RABBITMQ_PORT}
+        target: ${RABBITMQ_PORT}
+      - published: ${RABBITMQ_MANAGEMENT_PORT}
+        target: ${RABBITMQ_MANAGEMENT_PORT}
     volumes:
       - /home/ing/Bureau/TikTok_Clone/server/docker/services/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
 
@@ -66,8 +68,8 @@ services:
     image: redis:latest
     command: redis-server --requirepass ${REDIS_PASSWORD}
     ports:
-      - published: 6379
-        target: 6379
+      - published: ${REDIS_PORT}
+        target: ${REDIS_PORT}
     volumes:
       - /home/ing/Bureau/TikTok_Clone/server/docker/services/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
       - redis_data:/data:rw
@@ -84,8 +86,8 @@ services:
       RABBITMQ_URI: ${RABBITMQ_URI}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     ports:
-      - published: 3001
-        target: 3001
+      - published: ${USER_SERVICE_PORT}
+        target: ${USER_SERVICE_PORT}
     env_file:
       - .env
 
@@ -103,8 +105,8 @@ services:
       RABBITMQ_URI: ${RABBITMQ_URI}
       VIDEO_SERVICE_PORT: ${VIDEO_SERVICE_PORT}
     ports:
-      - published: 3002
-        target: 3002
+      - published: ${VIDEO_SERVICE_PORT}
+        target: ${VIDEO_SERVICE_PORT}
     env_file:
       - .env
     volumes:
@@ -117,14 +119,14 @@ services:
       - rabbitmq
       - redis
     environment:
-      RECOMMENDATION_SERVICE_PORT: 5000
-      RABBITMQ_URI: amqp://rabbitmq  
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      RECOMMENDATION_SERVICE_PORT: ${RECOMMENDATION_SERVICE_PORT}
+      RABBITMQ_URI: ${RABBITMQ_URI}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
-      - published: 5000
-        target: 5000
+      - published: ${RECOMMENDATION_SERVICE_PORT}
+        target: ${RECOMMENDATION_SERVICE_PORT}
     env_file:
       - .env
 

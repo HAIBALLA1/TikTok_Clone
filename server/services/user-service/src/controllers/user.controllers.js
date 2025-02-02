@@ -38,8 +38,6 @@ export const registerUser = async (req, res) => {
     }
 };
 
-
-
 // User login
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -69,9 +67,6 @@ export const loginUser = async (req, res) => {
 
     res.status(401).send('Invalid credentials');
 };
-
-
-
 
 
 // Get user profile

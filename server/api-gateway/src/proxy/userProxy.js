@@ -1,9 +1,8 @@
-// backend/proxy/userProxy.js
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { userServiceUrl } from '../config/config.js';
 
 const userProxy = createProxyMiddleware({
-    target: process.env.USER_SERVICE_URL || 'http://user-service:3001',
+    target: userServiceUrl,
     changeOrigin: true,
     onProxyReq: (proxyReq, req) => {
         if (req.body && !proxyReq.writableEnded) {
