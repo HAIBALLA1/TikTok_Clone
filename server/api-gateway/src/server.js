@@ -40,7 +40,7 @@ app.use('/api/videos', authenticateToken, (req, res, next) => {
 }, videoProxy);
 
 
-app.use('/api/recommender', authenticateToken, recommenderProxy);
+app.use('/api/recommendations', authenticateToken, recommenderProxy);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

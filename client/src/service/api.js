@@ -3,7 +3,7 @@ import { getToken } from '../context/AuthContext';
 
 const api = axios.create({
   baseURL: 'http://localhost:3009/api', 
-  timeout: 10000,
+  timeout: 150000,
   headers: {
     'Content-Type': 'application/json',
   },

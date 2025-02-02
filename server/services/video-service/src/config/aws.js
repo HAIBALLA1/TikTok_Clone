@@ -1,10 +1,14 @@
-import AWS from 'aws-sdk';
+// aws.js
+import { S3Client } from '@aws-sdk/client-s3';
+import dotenv from 'dotenv';
+dotenv.config();
 
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,       
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, 
-  region: process.env.AWS_REGION || 'eu-west-1'
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
 });
 
-const s3 = new AWS.S3();
-export default s3;
+export default s3Client;

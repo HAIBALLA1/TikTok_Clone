@@ -22,6 +22,8 @@ services:
       - .env
     volumes:
       - ./uploads:/app/uploads
+    networks:
+      - tiktok_network
 
   mongo:
     container_name: docker_mongo_1
@@ -31,11 +33,12 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     ports:
-      - published: ${MONGODB_PORT}
-        target: ${MONGODB_PORT}
+      - "${MONGODB_PORT}:${MONGODB_PORT}"
     volumes:
       - /home/ing/Bureau/TikTok_Clone/server/docker/services/mongodb/init.js:/docker-entrypoint-initdb.d/init.js:ro
       - mongodb_data:/data/db:rw
+    networks:
+      - tiktok_network
 
   postgres:
     container_name: docker_postgres_1
@@ -45,10 +48,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - published: ${POSTGRES_PORT}
-        target: ${POSTGRES_PORT}
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
+    networks:
+      - tiktok_network
 
   rabbitmq:
     container_name: docker_rabbitmq_1
@@ -57,22 +61,23 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     ports:
-      - published: ${RABBITMQ_PORT}
-        target: ${RABBITMQ_PORT}
-      - published: ${RABBITMQ_MANAGEMENT_PORT}
-        target: ${RABBITMQ_MANAGEMENT_PORT}
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - /home/ing/Bureau/TikTok_Clone/server/docker/services/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - tiktok_network
 
   redis:
     image: redis:latest
     command: redis-server --requirepass ${REDIS_PASSWORD}
     ports:
-      - published: ${REDIS_PORT}
-        target: ${REDIS_PORT}
+      - "${REDIS_PORT}:${REDIS_PORT}"
     volumes:
       - /home/ing/Bureau/TikTok_Clone/server/docker/services/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
       - redis_data:/data:rw
+    networks:
+      - tiktok_network
 
   user-service:
     build:
@@ -86,10 +91,11 @@ services:
       RABBITMQ_URI: ${RABBITMQ_URI}
       USER_SERVICE_PORT: ${USER_SERVICE_PORT}
     ports:
-      - published: ${USER_SERVICE_PORT}
-        target: ${USER_SERVICE_PORT}
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
     env_file:
       - .env
+    networks:
+      - tiktok_network
 
   video-service:
     build:
@@ -105,13 +111,16 @@ services:
       RABBITMQ_URI: ${RABBITMQ_URI}
       VIDEO_SERVICE_PORT: ${VIDEO_SERVICE_PORT}
     ports:
-      - published: ${VIDEO_SERVICE_PORT}
-        target: ${VIDEO_SERVICE_PORT}
+      - "${VIDEO_SERVICE_PORT}:${VIDEO_SERVICE_PORT}"
     env_file:
       - .env
     volumes:
+      - ../services/amqplib.service.mjs:/usr/src/app/amqplib.service.mjs
+
       - ../services/video-service/uploads:/app/uploads
-  
+    networks:
+      - tiktok_network
+
   recommender-service:
     build:
       context: /home/ing/Bureau/TikTok_Clone/server/services/recommender-service
@@ -125,13 +134,21 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
     ports:
-      - published: ${RECOMMENDATION_SERVICE_PORT}
-        target: ${RECOMMENDATION_SERVICE_PORT}
+      - "${RECOMMENDATION_SERVICE_PORT}:${RECOMMENDATION_SERVICE_PORT}"
     env_file:
       - .env
+    volumes:
+      - ../services/amqplib.service.mjs:/app/src/amqplib.service.mjs
 
+
+    networks:
+      - tiktok_network
 
 volumes:
   mongodb_data: {}
   postgres_data: {}
   redis_data: {}
+
+networks:
+  tiktok_network:
+    driver: bridge

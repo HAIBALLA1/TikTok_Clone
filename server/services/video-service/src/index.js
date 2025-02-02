@@ -3,34 +3,32 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import videoRoutes from './routes/video.routes.js';
-import bodyParser from 'body-parser';
 import path from 'path';
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors()); 
-app.use(express.json()); 
+// Utiliser express.json() et express.urlencoded() avec une limite appropriée
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve static files
+app.use(cors());
+
+// Servir les fichiers statiques
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// Define routes for videos
+// Définir les routes
 app.use('/api/videos', videoRoutes);
 
-// Configure body-parser for multipart/form-data requests (useful for uploads)
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Video service port
-const PORT = process.env.VIDEO_SERVICE_PORT || 3002;
-
-// Start server after database synchronization
-sequelize.sync({ force: false }).then(() => {
+// Démarrer le serveur après synchronisation de la BDD
+sequelize.sync({ alter: true })
+  .then(() => {
+    const PORT = process.env.VIDEO_SERVICE_PORT || 3002;
     app.listen(PORT, () => {
-        console.log(`Video service running on port ${PORT}`);
+      console.log(`Video service running on port ${PORT}`);
     });
-}).catch(error => {
+  })
+  .catch(error => {
     console.error('Error connecting to the database:', error);
-});
+  });

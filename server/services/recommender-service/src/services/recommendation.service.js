@@ -1,4 +1,6 @@
 import redis from '../config/redis.js';
+import { publishMessage  } from '../amqplib.service.mjs';
+
 
 /**
  * Increment the score of a video in the sorted set associated with the user.

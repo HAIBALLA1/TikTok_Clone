@@ -3,7 +3,6 @@ import { getUserRecommendations } from '../controllers/recommendation.controller
 
 const router = express.Router();
 
-// GET /api/recommendations/:userId
 router.get('/:userId', getUserRecommendations);
 
 export default router;

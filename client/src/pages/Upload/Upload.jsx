@@ -31,7 +31,6 @@ const Upload = () => {
     formData.append('description', description);
     formData.append('video', file);
 
-    // logs to check the data
     console.log('FormData Contents:');
     for (let pair of formData.entries()) {
       console.log(`${pair[0]}:`, pair[1]);
@@ -40,11 +39,7 @@ const Upload = () => {
     setIsUploading(true);
 
     try {
-      const response = await api.post('/videos', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await api.post('/videos', formData);
       console.log('Video uploaded successfully:', response.data);
       alert('Video uploaded successfully!');
       navigate('/videos');
