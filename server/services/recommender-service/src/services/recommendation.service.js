@@ -28,7 +28,7 @@ export async function getUserRecommendations(userId, top = 10) {
  * To improve this algorithm, you can query the video service or use an NLP method.
  */
 async function getContentScoreForVideo(videoId) {
-  // for the example, we return a fixed value
+  
   return 1;
 }
 

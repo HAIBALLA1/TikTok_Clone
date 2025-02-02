@@ -38,6 +38,9 @@ export const generateUploadUrl = async (req, res) => {
 
 // upload video
 export const uploadVideo = (req, res) => {
+    req.on('aborted', () => {
+        console.log('Request was aborted by the client');
+      });
     upload(req, res, async (err) => {
       if (err) {
         console.error('Error during upload:', err);
