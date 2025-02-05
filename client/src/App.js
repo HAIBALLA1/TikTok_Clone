@@ -7,7 +7,6 @@ import Search from './pages/Search/Search';
 import VideoDetail from './pages/VideoDetail/VideoDetail';
 import Profile from './pages/Profile/Profile';
 import Following from './pages/Following/Following';
-import Live from './pages/Live/Live';
 import Upload from './pages/Upload/Upload';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
@@ -24,7 +23,6 @@ function App() {
           <Route path="/video/:videoId" element={<VideoDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/following" element={<Following />} />
-          <Route path="/live" element={<Live />} />
           
           {/* Routes d'authentification */}
           <Route path="/login" element={<Login />} />

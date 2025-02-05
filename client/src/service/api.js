@@ -16,6 +16,7 @@ const unprotectedRoutes = ['/login', '/register'];
 // interceptor to add the token to the request
 api.interceptors.request.use(
   (config) => {
+    console.log('Request:', config);
     if (!unprotectedRoutes.some(route => config.url.includes(route))) {
       const token = getToken();
       if (token) {
@@ -24,7 +25,21 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('Request Error:', error);
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => {
+    console.log('Response:', response);
+    return response;
+  },
+  (error) => {
+    console.error('Response Error:', error.response || error);
+    return Promise.reject(error);
+  }
 );
 
 
